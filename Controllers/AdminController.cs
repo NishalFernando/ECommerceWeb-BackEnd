@@ -50,5 +50,38 @@ namespace ECommerceWeb.Controllers
 
             return Ok(admin);
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Admin>> updateAdmin(int id,Admin admin)
+        {
+            _dbContext.Entry(admin).State = EntityState.Modified;
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+            return Ok(admin);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> deleteAdmin(int id)
+        {
+            if (_dbContext.Admin == null)
+            {
+                return NotFound();
+            }
+            var admin = await _dbContext.Admin.FindAsync(id);
+            if (admin == null)
+            {
+                return NotFound();
+            }
+            _dbContext.Admin.Remove(admin);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(admin);
+        }
     }
 }
